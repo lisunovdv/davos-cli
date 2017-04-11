@@ -1,7 +1,7 @@
 {
   "name": "davos-cli",
-  "version": "1.0.2",
-  "description": "Salesforce Commerce Cloud (Demandware) cartridge uploader for WebDAV",
+  "version": "1.0.3",
+  "description": "Command-line client for Davos - Salesforce Commerce Cloud (Demandware) cartridge uploader for WebDAV",
   "main": "index.js",
   "scripts": {
     "test": "mocha --opts scripts/mocha.opts src/**/*-test.js",
@@ -21,7 +21,11 @@
     "synch",
     "eclipse",
     "watch",
-    "isml"
+    "isml",
+    "davos",
+    "cli",
+    "command line",
+    "command-line"
   ],
   "author": "ForkPoint",
   "license": "MIT",
@@ -40,16 +44,17 @@
     "winston": "^2.3.0",
     "progress": "^1.1.8",
     "request-debug": "^0.2.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "davos": "^1.0.0"
   },
   "devDependencies": {
     "chai": "~3.5.0",
     "chai-as-promised": "~6.0.0",
-    "eslint": "~3.13.1",
-    "eslint-config-airbnb-base": "~11.0.1",
-    "eslint-plugin-babel": "~4.0.0",
+    "eslint": "^3.13.1",
+    "eslint-config-defaults": "^9.0.0",
+    "eslint-plugin-babel": "^4.1.1",
     "eslint-plugin-import": "~2.2.0",
-    "eslint-plugin-mocha": "~4.8.0",
+    "eslint-plugin-mocha": "^4.9.0",
     "fixpack": "~2.3.1",
     "mocha": "~3.2.0",
     "mocha-clean": "~1.0.0",
