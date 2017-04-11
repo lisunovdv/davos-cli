@@ -8,10 +8,12 @@ process.env.UV_THREADPOOL_SIZE = 128;
   // Imports
   const chalk = require('chalk'),
     path = require('path'),
-    ConfigEditor = require('./src/config-editor'),
     Davos = require('davos'),
     config = Davos.config,
     log = Davos.logger;
+
+  // Local dependencies
+  const ConfigEditor = require('./src/config-editor');
 
   let configuration,
     activeConfig,
