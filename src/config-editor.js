@@ -28,37 +28,37 @@
   // Imports
   const prompt = require('prompt'),
     chalk = require('chalk'),
-    davos = require('davos'),
-    config = davos.config,
-    log = davos.logger;
+    Davos = require('davos'),
+    ConfigManager = new Davos.ConfigManager(),
+    Log = Davos.Logger;
 
   class ConfigEditor {
-    constructor (conf) {
-      this.conf = conf;
+    constructor (config) {
+      this.config = config;
       return this;
     }
 
     createConfig () {
       const self = this;
 
-      let workingDirectory = self.conf.basePath || process.cwd(),
-        cartridges = config.getCartridges(workingDirectory, []);
+      let workingDirectory = self.config.basePath || process.cwd(),
+        cartridges = ConfigManager.getCartridges(workingDirectory);
 
-      if (config.isConfigExisting()) {
-        log.info(chalk.yellow('\nConfiguration already exists.'));
+      if (ConfigManager.config.isConfigExisting()) {
+        Log.info(chalk.yellow('\nConfiguration already exists.'));
         return;
       } else if (cartridges.length < 1) {
-        log.info(chalk.yellow(`No cartridges found in ${workingDirectory} and it's subdirectories.`));
+        Log.info(chalk.yellow(`No cartridges found in ${workingDirectory} and it's subdirectories.`));
         return;
       }
 
       prompt.start();
       prompt.get(createInsertEdit, function (err, result) {
         if (err) {
-          return config.promptError(err);
+          return ConfigManager.promptError(err);
         }
 
-        config.saveConfiguration([
+        ConfigManager.saveConfiguration([
           {
             active: true,
             profile: result.hostname.split('-')[0],
@@ -81,23 +81,23 @@
       prompt.start();
       prompt.get(createInsertEdit, function (err, result) {
         if (err) {
-          return config.promptError(err);
+          return ConfigManager.promptError(err);
         }
 
-        let workingDirectory = self.conf.basePath || process.cwd(),
-          cartridges = config.getCartridges(workingDirectory, []),
-          configJSON = config.loadConfiguration(),
-          len = configJSON.length,
+        let workingDirectory = self.config.basePath || process.cwd(),
+          cartridges = ConfigManager.getCartridges(workingDirectory),
+          profiles = ConfigManager.loadConfiguration().getProfiles(),
+          len = profiles.length,
           newProfile = result.hostname.split('-')[0];
 
         for (let i = 0; i < len; i++) {
-          if (configJSON[i].profile === newProfile) {
-            log.info(chalk.yellow(`\nProfile ${newProfile} exists in your current configuration.`));
+          if (profiles[i].profile === newProfile) {
+            Log.info(chalk.yellow(`\nProfile ${newProfile} exists in your current configuration.`));
             return;
           }
         }
 
-        configJSON.push({
+        profiles.push({
           active: false,
           profile: result.hostname.split('-')[0],
           config: {
@@ -110,41 +110,41 @@
           }
         });
 
-        config.saveConfiguration(configJSON);
+        ConfigManager.saveConfiguration(profiles);
 
-        log.info(chalk.cyan(`\n${newProfile} inserted successfuly.`));
+        Log.info(chalk.cyan(`\n${newProfile} inserted successfuly.`));
       });
     }
 
     editProfile () {
       const self = this;
 
-      let list = config.loadConfiguration(),
-        profile = (!self.conf.profile) ? self.conf.P : self.conf.profile,
-        foundProfile = list.find(x => x.profile === profile),
-        len = list.length;
+      let profile = self.config.profile || self.config.P,
+        profiles = ConfigManager.loadConfiguration().getProfiles(),
+        foundProfile = profiles.find(x => x.profile === profile),
+        len = profiles.length;
 
       if (!profile || profile === true) {
         let message = (profile === undefined) ? '\nUse edit --profile or -P [profile name].' : '\nPlease specify a profile.';
-        log.info(chalk.yellow(message));
+        Log.info(chalk.yellow(message));
         return;
       } else if (foundProfile === undefined) {
-        log.info(chalk.red(`\nCannot find ${profile} profile`));
+        Log.info(chalk.red(`\nCannot find ${profile} profile`));
         return;
       }
 
       prompt.start();
       prompt.get(createInsertEdit, function (err, result) {
         if (err) {
-          return config.promptError(err);
+          return ConfigManager.promptError(err);
         }
 
-        let workingDirectory = self.conf.basePath || process.cwd(),
-          cartridges = config.getCartridges(workingDirectory, []),
+        let workingDirectory = self.config.basePath || process.cwd(),
+          cartridges = ConfigManager.getCartridges(workingDirectory),
           newList = [];
 
         for (let i = 0; i < len; i++) {
-          let currentProfile = list[i];
+          let currentProfile = profiles[i];
 
           if (currentProfile === foundProfile) {
             currentProfile.profile = result.hostname.split('-')[0];
@@ -161,57 +161,57 @@
           newList.push(currentProfile);
         }
 
-        config.saveConfiguration(newList);
+        ConfigManager.saveConfiguration(newList);
 
-        log.info(chalk.cyan(`\nSuccessfuly updated profile ${profile}`));
+        Log.info(chalk.cyan(`\nSuccessfuly updated profile ${profile}`));
       });
     }
 
     listProfiles() {
-      let list = config.loadConfiguration(),
-        activeProfile = list.find(x => x.active === true),
-        len = list.length,
+      let profiles = ConfigManager.loadConfiguration().getProfiles(),
+        activeProfile = profiles.find(x => x.active === true),
+        len = profiles.length,
         result;
 
       for (let i = 0; i < len; i++) {
-        let currentProfile = list[i];
+        let currentProfile = profiles[i];
 
         result = chalk.bgWhite(chalk.black(currentProfile.profile));
         if (currentProfile === activeProfile) {
           result += chalk.cyan(' <--- active');
         }
 
-        log.info(`\n${result}`);
+        Log.info(`\n${result}`);
       }
     }
 
     switchProfile() {
       const self = this;
 
-      let list = config.loadConfiguration(),
-        profile = (!self.conf.profile) ? self.conf.P : self.conf.profile,
-        foundProfile = list.find(x => x.profile === profile),
-        newList = [],
-        len = list.length;
+      let profile = self.config.profile || self.config.P,
+        profiles = ConfigManager.loadConfiguration().getProfiles(),
+        foundProfile = profiles.find(x => x.profile === profile),
+        len = profiles.length,
+        newList = [];
 
       if (!profile || profile === true) {
         let message = (profile === undefined) ? '\nUse switch --profile or -P [profile name].' : '\nPlease specify a profile.';
-        log.info(chalk.yellow(message));
+        Log.info(chalk.yellow(message));
         return;
       } else if (foundProfile === undefined) {
-        log.info(chalk.red(`\nCannot find ${profile} profile.`));
+        Log.info(chalk.red(`\nCannot find ${profile} profile.`));
         return;
       }
 
       for (let i = 0; i < len; i++) {
-        let currentProfile = list[i];
+        let currentProfile = profiles[i];
         currentProfile.active = (currentProfile === foundProfile) ? true : false;
         newList.push(currentProfile);
       }
 
-      config.saveConfiguration(newList);
+      ConfigManager.saveConfiguration(newList);
 
-      log.info(chalk.cyan(`\nSwitched to ${foundProfile.profile}. It is now your active profile.`));
+      Log.info(chalk.cyan(`\nSwitched to ${foundProfile.profile}. It is now your active profile.`));
     }
   }
 
