@@ -9,8 +9,8 @@ process.env.UV_THREADPOOL_SIZE = 128;
   const chalk = require('chalk'),
     path = require('path'),
     Davos = require('davos'),
-    config = Davos.config,
-    log = Davos.logger;
+    ConfigManager = new Davos.ConfigManager(),
+    Log = Davos.Logger;
 
   // Local dependencies
   const ConfigEditor = require('./src/config-editor');
@@ -20,28 +20,15 @@ process.env.UV_THREADPOOL_SIZE = 128;
     argv,
     isNewConfigOrHelp = process.argv[2] === 'create' || process.argv[2] === undefined || process.argv[2] === '-h' || process.argv[2] === '--help';
 
-  if (!isNewConfigOrHelp && !config.isConfigExisting()) {
-    log.error(chalk.red(`\nCannot find configuration in [${process.cwd()}].`));
+  if (!isNewConfigOrHelp && !ConfigManager.isConfigExisting()) {
+    Log.error(chalk.red(`\nCannot find configuration in [${process.cwd()}].`));
     return;
   }
 
-  var configPath = path.join(process.cwd(), config.getConfigName());
+  var configPath = path.join(process.cwd(), ConfigManager.getConfigName());
 
   if (!isNewConfigOrHelp) {
-    configuration = config.loadConfiguration();
-
-    //there was a problem retrieving the config file
-    if (!configuration) {
-      log.error(chalk.red(`\nCannot read configuration at [${configPath}].`));
-      return;
-    }
-
-    var activeProfile = configuration.find(x => x.active === true);
-    if (!activeProfile) {
-      log.error(chalk.red(`\nThere is no active profile in your configuration [${configPath}].`));
-      return;
-    }
-    activeConfig = activeProfile.config;
+    activeConfig = ConfigManager.loadConfiguration().getActiveProfile();
   }
 
   argv = require('yargs')
@@ -96,18 +83,17 @@ process.env.UV_THREADPOOL_SIZE = 128;
     .alias('h', 'help')
     .argv;
 
-  var configEditor = new ConfigEditor(argv);
-  var davos = new Davos.core(argv);
-  var command = argv._[0];
+  let configEditor = new ConfigEditor(argv),
+    command = argv._[0];
   switch (command) {
     case 'upload':
-      davos.upload();
+      new Davos.Core(argv).upload();
       break;
     case 'watch':
-      davos.watch();
+      new Davos.Core(argv).watch();
       break;
     case 'sync':
-      davos.sync();
+      new Davos.Core(argv).sync();
       break;
     case 'create':
       configEditor.createConfig();
@@ -125,9 +111,9 @@ process.env.UV_THREADPOOL_SIZE = 128;
       configEditor.switchProfile();
       break;
     case undefined:
-      log.info(require('yargs').getUsageInstance().help());
+      Log.info(require('yargs').getUsageInstance().help());
       break;
     default:
-      log.info(chalk.red(`\nCommand ${command} doesn't exist`));
+      Log.info(chalk.red(`\nCommand ${command} doesn't exist`));
   }
 }());
