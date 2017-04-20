@@ -32,9 +32,12 @@
     Log = Davos.Logger;
 
   class ConfigEditor {
-    constructor (config) {
-      this.ConfigManager = new Davos.ConfigManager();
-      this.config = config;
+    constructor (config, ConfigManagerInstance) {
+      this.ConfigManager = ConfigManagerInstance || new Davos.ConfigManager();
+      this.config = (Object.keys(this.ConfigManager.config).length === 0)
+        ? this.ConfigManager.loadConfiguration().getActiveProfile(config)
+        : this.ConfigManager.mergeConfiguration(config);
+
       return this;
     }
 
@@ -167,7 +170,7 @@
       });
     }
 
-    listProfiles() {
+    listProfiles () {
       let profiles = this.ConfigManager.loadConfiguration().getProfiles(),
         activeProfile = profiles.find(x => x.active === true),
         len = profiles.length,
@@ -185,7 +188,7 @@
       }
     }
 
-    switchProfile() {
+    switchProfile () {
       const self = this;
 
       let profile = self.config.profile || self.config.P,

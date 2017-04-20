@@ -83,32 +83,31 @@ process.env.UV_THREADPOOL_SIZE = 128;
     .alias('h', 'help')
     .argv;
 
-  let configEditor = new ConfigEditor(argv),
-    command = argv._[0];
+  let command = argv._[0];
   switch (command) {
     case 'upload':
-      new Davos.Core(argv).upload();
+      new Davos.Core(argv, ConfigManager).upload();
       break;
     case 'watch':
-      new Davos.Core(argv).watch();
+      new Davos.Core(argv, ConfigManager).watch();
       break;
     case 'sync':
-      new Davos.Core(argv).sync();
+      new Davos.Core(argv, ConfigManager).sync();
       break;
     case 'create':
-      configEditor.createConfig();
+      new ConfigEditor(argv, ConfigManager).createConfig();
       break;
     case 'insert':
-      configEditor.insertProfile();
+      new ConfigEditor(argv, ConfigManager).insertProfile();
       break;
     case 'edit':
-      configEditor.editProfile();
+      new ConfigEditor(argv, ConfigManager).editProfile();
       break;
     case 'list':
-      configEditor.listProfiles();
+      new ConfigEditor(argv, ConfigManager).listProfiles();
       break;
     case 'switch':
-      configEditor.switchProfile();
+      new ConfigEditor(argv, ConfigManager).switchProfile();
       break;
     case undefined:
       Log.info(require('yargs').getUsageInstance().help());
