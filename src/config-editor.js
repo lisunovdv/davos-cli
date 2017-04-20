@@ -23,6 +23,10 @@
     name: 'exclude',
     description: 'Exclude uploading folders and files. Separate all excludes by space',
     default: '**/node_modules/**'
+  }, {
+    name: 'templateReplace',
+    description: 'Replace custom tags with build information inside your templates. You can add more files and tags at config file.',
+    default: '/path/to/cartrige/template/build_info.isml'
   }];
 
   // Imports
@@ -34,9 +38,7 @@
   class ConfigEditor {
     constructor (config, ConfigManagerInstance) {
       this.ConfigManager = ConfigManagerInstance || new Davos.ConfigManager();
-      this.config = (Object.keys(this.ConfigManager.config).length === 0)
-        ? this.ConfigManager.loadConfiguration().getActiveProfile(config)
-        : this.ConfigManager.mergeConfiguration(config);
+      this.config = config;
 
       return this;
     }
@@ -47,7 +49,7 @@
       let workingDirectory = self.config.basePath || process.cwd(),
         cartridges = self.ConfigManager.getCartridges(workingDirectory);
 
-      if (self.ConfigManager.config.isConfigExisting()) {
+      if (self.ConfigManager.isConfigExisting()) {
         Log.info(chalk.yellow('\nConfiguration already exists.'));
         return;
       } else if (cartridges.length < 1) {
@@ -69,9 +71,15 @@
               hostname: result.hostname,
               username: result.username,
               password: result.password,
-              cartridge: cartridges,
               codeVersion: result.codeversion,
-              exclude: result.exclude.split(' ')
+              cartridge: cartridges,
+              exclude: result.exclude.split(' '),
+              templateReplace: {
+                files: [result.templateReplace],
+                pattern: {
+  	              buildVersion: "@DEPLOYMENT_VERSION@"
+  	            }
+  	          }
             }
           }
         ]);
@@ -107,9 +115,15 @@
             hostname: result.hostname,
             username: result.username,
             password: result.password,
-            cartridge: cartridges,
             codeVersion: result.codeversion,
-            exclude: result.exclude.split(' ')
+            cartridge: cartridges,
+            exclude: result.exclude.split(' '),
+            templateReplace: {
+              files: [result.templateReplace],
+              pattern: {
+	              buildVersion: "@DEPLOYMENT_VERSION@"
+	            }
+	          }
           }
         });
 
