@@ -29,11 +29,11 @@
   const prompt = require('prompt'),
     chalk = require('chalk'),
     Davos = require('davos'),
-    ConfigManager = new Davos.ConfigManager(),
     Log = Davos.Logger;
 
   class ConfigEditor {
     constructor (config) {
+      this.ConfigManager = new Davos.ConfigManager();
       this.config = config;
       return this;
     }
@@ -42,9 +42,9 @@
       const self = this;
 
       let workingDirectory = self.config.basePath || process.cwd(),
-        cartridges = ConfigManager.getCartridges(workingDirectory);
+        cartridges = self.ConfigManager.getCartridges(workingDirectory);
 
-      if (ConfigManager.config.isConfigExisting()) {
+      if (self.ConfigManager.config.isConfigExisting()) {
         Log.info(chalk.yellow('\nConfiguration already exists.'));
         return;
       } else if (cartridges.length < 1) {
@@ -55,10 +55,10 @@
       prompt.start();
       prompt.get(createInsertEdit, function (err, result) {
         if (err) {
-          return ConfigManager.promptError(err);
+          return self.ConfigManager.promptError(err);
         }
 
-        ConfigManager.saveConfiguration([
+        self.ConfigManager.saveConfiguration([
           {
             active: true,
             profile: result.hostname.split('-')[0],
@@ -81,12 +81,12 @@
       prompt.start();
       prompt.get(createInsertEdit, function (err, result) {
         if (err) {
-          return ConfigManager.promptError(err);
+          return self.ConfigManager.promptError(err);
         }
 
         let workingDirectory = self.config.basePath || process.cwd(),
-          cartridges = ConfigManager.getCartridges(workingDirectory),
-          profiles = ConfigManager.loadConfiguration().getProfiles(),
+          cartridges = self.ConfigManager.getCartridges(workingDirectory),
+          profiles = self.ConfigManager.loadConfiguration().getProfiles(),
           len = profiles.length,
           newProfile = result.hostname.split('-')[0];
 
@@ -110,7 +110,7 @@
           }
         });
 
-        ConfigManager.saveConfiguration(profiles);
+        self.ConfigManager.saveConfiguration(profiles);
 
         Log.info(chalk.cyan(`\n${newProfile} inserted successfuly.`));
       });
@@ -120,7 +120,7 @@
       const self = this;
 
       let profile = self.config.profile || self.config.P,
-        profiles = ConfigManager.loadConfiguration().getProfiles(),
+        profiles = self.ConfigManager.loadConfiguration().getProfiles(),
         foundProfile = profiles.find(x => x.profile === profile),
         len = profiles.length;
 
@@ -136,11 +136,11 @@
       prompt.start();
       prompt.get(createInsertEdit, function (err, result) {
         if (err) {
-          return ConfigManager.promptError(err);
+          return self.ConfigManager.promptError(err);
         }
 
         let workingDirectory = self.config.basePath || process.cwd(),
-          cartridges = ConfigManager.getCartridges(workingDirectory),
+          cartridges = self.ConfigManager.getCartridges(workingDirectory),
           newList = [];
 
         for (let i = 0; i < len; i++) {
@@ -161,14 +161,14 @@
           newList.push(currentProfile);
         }
 
-        ConfigManager.saveConfiguration(newList);
+        self.ConfigManager.saveConfiguration(newList);
 
         Log.info(chalk.cyan(`\nSuccessfuly updated profile ${profile}`));
       });
     }
 
     listProfiles() {
-      let profiles = ConfigManager.loadConfiguration().getProfiles(),
+      let profiles = this.ConfigManager.loadConfiguration().getProfiles(),
         activeProfile = profiles.find(x => x.active === true),
         len = profiles.length,
         result;
@@ -189,7 +189,7 @@
       const self = this;
 
       let profile = self.config.profile || self.config.P,
-        profiles = ConfigManager.loadConfiguration().getProfiles(),
+        profiles = self.ConfigManager.loadConfiguration().getProfiles(),
         foundProfile = profiles.find(x => x.profile === profile),
         len = profiles.length,
         newList = [];
@@ -209,7 +209,7 @@
         newList.push(currentProfile);
       }
 
-      ConfigManager.saveConfiguration(newList);
+      self.ConfigManager.saveConfiguration(newList);
 
       Log.info(chalk.cyan(`\nSwitched to ${foundProfile.profile}. It is now your active profile.`));
     }
