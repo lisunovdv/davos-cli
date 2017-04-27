@@ -22,7 +22,7 @@
   }, {
     name: 'exclude',
     description: 'Exclude uploading folders and files. Separate all excludes by space',
-    default: '**/node_modules/**'
+    default: '**/node_modules/** **/.git/** **/.svn/** **/.sass-cache/**'
   }, {
     name: 'templateReplace',
     description: 'Replace custom tags with build information inside your templates. You can add more files and tags at config file.',
@@ -52,7 +52,9 @@
       if (self.ConfigManager.isConfigExisting()) {
         Log.info(chalk.yellow('\nConfiguration already exists.'));
         return;
-      } else if (cartridges.length < 1) {
+      }
+
+      if (cartridges.length < 1) {
         Log.info(chalk.yellow(`No cartridges found in ${workingDirectory} and it's subdirectories.`));
         return;
       }
@@ -97,7 +99,7 @@
 
         let workingDirectory = self.config.basePath || process.cwd(),
           cartridges = self.ConfigManager.getCartridges(workingDirectory),
-          profiles = self.ConfigManager.loadConfiguration().getProfiles(),
+          profiles = self.ConfigManager.loadConfiguration().profiles,
           len = profiles.length,
           newProfile = result.hostname.split('-')[0];
 
@@ -137,7 +139,7 @@
       const self = this;
 
       let profile = self.config.profile || self.config.P,
-        profiles = self.ConfigManager.loadConfiguration().getProfiles(),
+        profiles = self.ConfigManager.loadConfiguration().profiles,
         foundProfile = profiles.find(x => x.profile === profile),
         len = profiles.length;
 
@@ -185,7 +187,7 @@
     }
 
     listProfiles () {
-      let profiles = this.ConfigManager.loadConfiguration().getProfiles(),
+      let profiles = this.ConfigManager.loadConfiguration().profiles,
         activeProfile = profiles.find(x => x.active === true),
         len = profiles.length,
         result;
@@ -206,7 +208,7 @@
       const self = this;
 
       let profile = self.config.profile || self.config.P,
-        profiles = self.ConfigManager.loadConfiguration().getProfiles(),
+        profiles = self.ConfigManager.loadConfiguration().profiles,
         foundProfile = profiles.find(x => x.profile === profile),
         len = profiles.length,
         newList = [];
