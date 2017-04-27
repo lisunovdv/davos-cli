@@ -51,7 +51,8 @@ process.env.UV_THREADPOOL_SIZE = 128;
     .example('davos edit --profile [name of profile]', 'edit the specified profile in the config file')
     .example('davos switch --profile [name of profile]', 'switch to specified profile in the config file')
     .example('davos sync --delete [boolean]', 'sync the cartridges on the server with your local cartridges. If delete option is passed, the cartridges on the server that does not exist in your local cartridges will be deleted.')
-    .example('davos upload <optional>--cartridge [path to cartridge]</optional>', 'upload all cartridges from your configuration or a specific single cartridge from your local cartridges')
+    .example('davos upload:cartridges <optional>--cartridge [path to cartridge]</optional>', 'upload all cartridges from your configuration or a specific single cartridge from your local cartridges')
+    .example('davos upload:sites <optional>--meta [path to meta]</optional>', 'import sites meta')
     .example('davos watch <optional>--cartridge [path to cartridge]</optional>', 'watch all cartridges from your configuration for changes or a specific single cartridge from your local cartridges')
     .config(activeConfig)
     .options({
@@ -85,8 +86,11 @@ process.env.UV_THREADPOOL_SIZE = 128;
 
   let command = argv._[0];
   switch (command) {
-    case 'upload':
-      new Davos.Core(argv, ConfigManager).upload();
+    case 'upload:cartridges':
+      new Davos.Core(argv, ConfigManager).uploadCartridges();
+      break;
+    case 'upload:sites':
+      new Davos.Core(argv, ConfigManager).uploadSitesMeta();
       break;
     case 'watch':
       new Davos.Core(argv, ConfigManager).watch();
