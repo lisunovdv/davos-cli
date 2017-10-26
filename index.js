@@ -92,6 +92,16 @@ process.env.UV_THREADPOOL_SIZE = 128;
     case 'upload:sites':
       new Davos.Core(argv, ConfigManager).uploadSitesMeta();
       break;
+    case "upload:meta":
+      new Davos.Core(argv, ConfigManager).uploadMeta(argv._[1]);
+      break;
+    case "upload":
+      let d = new Davos.Core(argv, ConfigManager);
+
+      d.uploadCartridges().then(function() {
+        return d.uploadSitesMeta();
+      });
+      break;
     case 'watch':
       new Davos.Core(argv, ConfigManager).watch();
       break;
