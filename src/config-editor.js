@@ -138,16 +138,12 @@
     editProfile () {
       const self = this;
 
-      let profile = self.config.profile || self.config.P,
+      let profile = self.config._[1],
         profiles = self.ConfigManager.loadConfiguration().profiles,
         foundProfile = profiles.find(x => x.profile === profile),
         len = profiles.length;
 
-      if (!profile || profile === true) {
-        let message = (profile === undefined) ? '\nUse edit --profile or -P [profile name].' : '\nPlease specify a profile.';
-        Log.info(chalk.yellow(message));
-        return;
-      } else if (foundProfile === undefined) {
+      if (foundProfile === undefined) {
         Log.info(chalk.red(`\nCannot find ${profile} profile`));
         return;
       }
@@ -207,17 +203,13 @@
     switchProfile () {
       const self = this;
 
-      let profile = self.config.profile || self.config.P,
+      let profile = self.config._[1],
         profiles = self.ConfigManager.loadConfiguration().profiles,
         foundProfile = profiles.find(x => x.profile === profile),
         len = profiles.length,
         newList = [];
 
-      if (!profile || profile === true) {
-        let message = (profile === undefined) ? '\nUse switch --profile or -P [profile name].' : '\nPlease specify a profile.';
-        Log.info(chalk.yellow(message));
-        return;
-      } else if (foundProfile === undefined) {
+      if (foundProfile === undefined) {
         Log.info(chalk.red(`\nCannot find ${profile} profile.`));
         return;
       }

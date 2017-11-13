@@ -32,7 +32,7 @@ process.env.UV_THREADPOOL_SIZE = 128;
   }
 
   argv = require('yargs')
-    .usage('Usage: davos [command] [options]')
+    .usage('Usage: davos [command] [parameters] [options]')
     .command('create', 'Creates a config file')
     .command('insert', 'Adds a new profile to the config file')
     .command('list', 'Lists all profiles')
@@ -44,16 +44,23 @@ process.env.UV_THREADPOOL_SIZE = 128;
       return yargs.config(activeConfig);
     }).command('watch', 'Watch cartredges for changes', function (yargs) {
       return yargs.config(activeConfig);
+    }).command("split", "Split xml bundle", function (yargs) {
+      return yargs.config(activeConfig);
     })
+    .command("merge", "Merge multiple xml files into a bundle")
     .example('davos create', 'create the config file')
     .example('davos insert', 'insert new profile in the config file')
     .example('davos list', 'list profiles in the config file')
-    .example('davos edit --profile [name of profile]', 'edit the specified profile in the config file')
-    .example('davos switch --profile [name of profile]', 'switch to specified profile in the config file')
+    .example('davos edit [name of profile]', 'edit the specified profile in the config file')
+    .example('davos switch [name of profile]', 'switch to specified profile in the config file')
     .example('davos sync --delete [boolean]', 'sync the cartridges on the server with your local cartridges. If delete option is passed, the cartridges on the server that does not exist in your local cartridges will be deleted.')
     .example('davos upload:cartridges <optional>--cartridge [path to cartridge]</optional>', 'upload all cartridges from your configuration or a specific single cartridge from your local cartridges')
     .example('davos upload:sites <optional>--meta [path to meta]</optional>', 'import sites meta')
+    .example("davos upload:meta <optional>--pattern *.xml</optional>", "Upload and import all meta files matching the pattern. Default pattern is *")
     .example('davos watch <optional>--cartridge [path to cartridge]</optional>', 'watch all cartridges from your configuration for changes or a specific single cartridge from your local cartridges')
+    .example("davos split:meta [path/to/bundle.xml] <optional>--out dir/for/chunks</optional>", "split a meta bundle into chunks by attribute group. Path must be relative starting from site_template directory.")
+    .example("davos split:lib [path/to/bundle.xml] <optional>--out dir/for/chunks</optional>", "split a library bundle into chunks by content. Path must be relative starting from site_template directory.")
+    .example("davos merge [pattern] <optional>--out bundle.xml</optional>", "merge all files matching the pattern into a bundle.xml in your CWD")
     .config(activeConfig)
     .options({
       'profile': {
@@ -93,17 +100,19 @@ process.env.UV_THREADPOOL_SIZE = 128;
       new Davos.Core(argv, ConfigManager).uploadSitesMeta();
       break;
     case "upload:meta":
-      new Davos.Core(argv, ConfigManager).uploadMeta(argv._[1]);
-      break;
-    case "upload":
-      let d = new Davos.Core(argv, ConfigManager);
-
-      d.uploadCartridges().then(function() {
-        return d.uploadSitesMeta();
-      });
+      new Davos.Core(argv, ConfigManager).uploadMeta();
       break;
     case 'watch':
       new Davos.Core(argv, ConfigManager).watch();
+      break;
+    case "split:meta":
+      new Davos.Core(argv, ConfigManager).splitMetaBundle();
+      break;
+    case "split:lib":
+      new Davos.Core(argv, ConfigManager).splitLibraryBundle();
+      break;
+    case "merge":
+      new Davos.Core(argv, ConfigManager).merge();
       break;
     case 'sync':
       new Davos.Core(argv, ConfigManager).sync();
