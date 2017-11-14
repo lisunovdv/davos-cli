@@ -31,7 +31,7 @@ Now that you have a configuration you could upload your cartridges or watch for 
 * Run the 'davos-cli upload:cartridges --cartridge [name of cartridge]' command to upload a single cartridge of your wish.
 * Run the 'davos-cli watch' command to watch all your cartridges for changes.
 * Run the 'davos-cli watch --cartridge [name of cartridge]' command to watch a single cartridge of your wish for changes.
-* 
+
 ### Upload and import meta
 
 Davos can upload and import your entire sites meta or separate metadata files of your choice.
