@@ -31,7 +31,7 @@ Now that you have a configuration you could upload your cartridges or watch for 
 * Run the 'davos-cli upload:cartridges --cartridge [name of cartridge]' command to upload a single cartridge of your wish.
 * Run the 'davos-cli watch' command to watch all your cartridges for changes.
 * Run the 'davos-cli watch --cartridge [name of cartridge]' command to watch a single cartridge of your wish for changes.
-* 
+
 ### Upload and import meta
 
 Davos can upload and import your entire sites meta or separate metadata files of your choice.
@@ -50,6 +50,7 @@ Davos can create bundles from multiple xml files or split bundles into separate 
 ### Configuration file specification
 
 *table 1. Profile*
+
 | key     | type    | description                                                                                  |
 |---------|---------|----------------------------------------------------------------------------------------------|
 | active  | Boolean | The active profile will be used by davos. There should only be one active profile at a time. |
@@ -57,6 +58,7 @@ Davos can create bundles from multiple xml files or split bundles into separate 
 | config  | Object  | The profile configuration object, see table 2.                                               |
 
 *table 2. Profile configuration*
+
 | key             | type   | description                                                                                           |
 |-----------------|--------|-------------------------------------------------------------------------------------------------------|
 | hostname        | String | The sandbox' hostname                                                                                 |
@@ -67,7 +69,7 @@ Davos can create bundles from multiple xml files or split bundles into separate 
 | exclude         | Array  |                                                                                                       |
 | templateReplace | Object |                                                                                                       |
 | tmpDir          | String | A directory where temporary files and archives will be stored. This is optional and defaults to "tmp" |
-| projectID          | String | The project name/ID |
+| projectID       | String | The project name/ID                                                                                   |
 | metaDir         | String | The base directory for the sites files. This is optional, defaults to "sites".                        |
 
 #### Sample configuration
