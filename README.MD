@@ -17,35 +17,35 @@ You can use `davos-cli` to interactively create this file and manage profiles.
 
 ### Profiles
 
-To create the configuration file you can run 'davos-cli create'.
+To create the configuration file you can run `davos create`.
 
-You could easily insert profiles (dev01, dev02, development etc.) by running the 'davos-cli insert'.
+You could easily insert profiles (dev01, dev02, development etc.) by running the `davos insert`.
 
-Running the 'davos-cli list' command will display a list of your profiles and will show which profile is active now.
+Running the `davos list` command will display a list of your profiles and will show which profile is active now.
 
-To switch your active profile you can run 'davos-cli switch [name of profile]'.
+To switch your active profile you can run `davos switch [name of profile]`.
 
 ### Upload and watch cartridges
 Now that you have a configuration you could upload your cartridges or watch for changes:
-* Run the 'davos-cli upload:cartridges' command to upload all your cartridges.
-* Run the 'davos-cli upload:cartridges --cartridge [name of cartridge]' command to upload a single cartridge of your wish.
-* Run the 'davos-cli watch' command to watch all your cartridges for changes.
-* Run the 'davos-cli watch --cartridge [name of cartridge]' command to watch a single cartridge of your wish for changes.
+* Run the `davos upload:cartridges` command to upload all your cartridges.
+* Run the `davos upload:cartridges --cartridge [name of cartridge]` command to upload a single cartridge of your wish.
+* Run the `davos watch` command to watch all your cartridges for changes.
+* Run the `davos watch --cartridge [name of cartridge]` command to watch a single cartridge of your wish for changes.
 
 ### Upload and import meta
 
 Davos can upload and import your entire sites meta or separate metadata files of your choice.
 
-* Run `davos-cli upload:sites` to upload and import your entire sites directory.
-* Run `davos-cli upload:meta --pattern *.xml` to upload and import only the files mattching your pattern from your `sites/meta` directory.
+* Run `davos upload:sites` to upload and import your entire sites directory.
+* Run `davos upload:meta --pattern *.xml` to upload and import only the files mattching your pattern from your `sites/meta` directory.
 
 ### Utility
 
 Davos can create bundles from multiple xml files or split bundles into separate files. At this point you can merge any type of xml files sharing the same root element but can only split meta and library files. This functionality will be expanded in the future.
 
-* Run `davos-cli merge [pattern] --out bundle.xml` to merge all files matching `pattern` from within the `sites` directory into `bundle.xml` in your cwd.
-* Run `davos-cli split:meta [path/to/bundle.xml] --out dir/for/chunks` to split all custom and system type extensions and definitions into separate xml files.
-* Run `davos-cli split:lib [path/to/bundle.xml] --out dir/for/chunks` to split all `content` elements of a library bundle.
+* Run `davos merge [pattern] --out bundle.xml` to merge all files matching `pattern` from within the `sites` directory into `bundle.xml` in your cwd.
+* Run `davos split:meta [path/to/bundle.xml] --out dir/for/chunks` to split all custom and system type extensions and definitions into separate xml files.
+* Run `davos split:lib [path/to/bundle.xml] --out dir/for/chunks` to split all `content` elements of a library bundle.
 
 ### Configuration file specification
 
@@ -85,8 +85,8 @@ Davos can create bundles from multiple xml files or split bundles into separate 
 			"username": "user1",
 			"password": "password1",
 			"cartridge": [
-				"foo\\cartridges\\app_foo",
-				"foo\\cartridges\\int_foo"
+				"app_foo",
+				"int_foo"
 			],
 			"codeVersion": "version1",
 			"exclude": ["**/node_modules/**",
@@ -101,8 +101,8 @@ Davos can create bundles from multiple xml files or split bundles into separate 
 			"username": "user2",
 			"password": "password2",
 			"cartridge": [
-				"foo\\cartridges\\app_foo",
-				"foo\\cartridges\\int_foo"
+				"app_foo",
+				"int_foo"
 			],
 			"codeVersion": "version1",
 			"exclude": ["**/node_modules/**",
