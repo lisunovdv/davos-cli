@@ -35,7 +35,15 @@
     Davos = require('davos'),
     Log = Davos.Logger;
 
+  /** 
+   * A configuration editor managing users profiles
+   */
   class ConfigEditor {
+    /**
+     * Create a configuration editor
+     * @param {Object} config The configuration object used by Davos
+     * @param {Object} ConfigManagerInstance The passed ConfigManagerInstance object or newly created
+     */
     constructor (config, ConfigManagerInstance) {
       this.ConfigManager = ConfigManagerInstance || new Davos.ConfigManager();
       this.config = config;
@@ -43,6 +51,9 @@
       return this;
     }
 
+    /**
+     * Create an active configuration profile
+     */
     createConfig () {
       const self = this;
 
@@ -88,6 +99,9 @@
       });
     }
 
+    /**
+     * Insert non active profile in the configuration manager
+     */
     insertProfile () {
       const self = this;
 
@@ -135,6 +149,9 @@
       });
     }
 
+    /**
+     * Edit saved profile in the configuration manager
+     */
     editProfile () {
       const self = this;
 
@@ -182,6 +199,9 @@
       });
     }
 
+    /**
+     * List all profiles from the configuration manager
+     */
     listProfiles () {
       let profiles = this.ConfigManager.loadConfiguration().profiles,
         activeProfile = profiles.find(x => x.active === true),
@@ -200,6 +220,9 @@
       }
     }
 
+    /**
+     * Switch the active profile in the configuration manager
+     */
     switchProfile () {
       const self = this;
 
