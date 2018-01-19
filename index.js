@@ -94,6 +94,7 @@ process.env.UV_THREADPOOL_SIZE = 128;
   let command = argv._[0];
   switch (command) {
     case 'upload:cartridges':
+      argv.cartridge = [argv.cartridge];
       new Davos.Core(argv, ConfigManager).uploadCartridges();
       break;
     case 'upload:sites':
